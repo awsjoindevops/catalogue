@@ -11,6 +11,7 @@ pipeline {
     options {
         timeout(time: 1, unit: 'HOURS')
         disableConcurrentBuilds()
+        ansiColor('xterm')
     }
     //parameters {
         // string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
@@ -85,6 +86,7 @@ pipeline {
 
                        """
                     }
+        }
             // when {
             //     expression{
             //         params.Deploy == 'true'
@@ -99,14 +101,9 @@ pipeline {
             //             build job: "catalogue-deploy", wait: true, parameters: params
             //         }
             // }
-          
-                
-            }
-
-
-
-        }
-    }
+                            
+                    }
+    
     // post build
     post { 
         always { 
