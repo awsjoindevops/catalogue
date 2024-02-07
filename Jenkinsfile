@@ -48,13 +48,7 @@ pipeline {
                 """
             }
         }
-        stage('Sonar Scan'){
-            steps{
-                sh """
-                    sonar-scanner
-                """
-            }
-        }
+        
         stage('Build') {
             steps {
                 sh """
@@ -105,7 +99,7 @@ pipeline {
                        
                        sh """
                             echo "HERE I wrote shell script"
-                            
+
                        """
                     }
             }
