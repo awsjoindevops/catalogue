@@ -1,92 +1,197 @@
-pipeline {
+// pipeline {
+//     agent {
+//         node {
+//            label 'AGENT-1' 
+//         }
+//     }
+//     environment { 
+//         packageVersion = ''
+//         //GIVE PRIVATE IP
+//         nexusURL = '172.31.0.187:8081'
+//     }
+//     options {
+//         timeout(time: 1, unit: 'HOURS')
+//         disableConcurrentBuilds()
+//     }
+//     // parameters {
+//     //     string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+
+//     //     text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
+
+//     //     booleanParam(name: 'TOGGLE', defaultValue: true, description: 'Toggle this value')
+
+//     //     choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
+
+//     //     password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
+//     // }
+//     // build
+//     stages {
+//         stage('Get the version') {
+//             steps {
+//                 script {
+//                     def packageJson = readJSON file: 'package.json'
+//                     packageVersion = packageJson.version
+//                     echo "application version: $packageVersion"
+//                 }
+//             }
+//         }
+//         stage('Install dependencies') {
+//             steps {
+//                 sh """
+//                     npm install
+//                 """
+//             }
+//         }
+//         stage('Build') {
+//             steps {
+//                 sh """
+//                     ls -la
+//                     zip -q -r catalogue.zip ./* -x ".git" -x "*.zip"
+//                     ls -ltr
+//                 """
+//             }
+//         }
+//         stage('Publish Artifact') {
+//             steps {
+//                  nexusArtifactUploader(
+//                     nexusVersion: 'nexus3',
+//                     protocol: 'http',
+//                     nexusUrl: "${nexusURL}",
+//                     groupId: 'com.roboshop',
+//                     version: "${packageVersion}",
+//                     repository: 'catalogue',
+//                     credentialsId: 'nexus-auth',
+//                     artifacts: [
+//                         [artifactId: 'catalogue',
+//                         classifier: '',
+//                         file: 'catalogue.zip',
+//                         type: 'zip']
+//                     ]
+//                 )
+//             }
+//         }
+//         stage('Deploy') {
+//             steps {
+//                 // script {
+//                 //         def params = [
+//                 //             string(name: 'version', value: "$packageVersion"),
+//                 //             string(name: 'environment', value: "dev")
+//                 //         ]
+//                 //         build job: "catalogue-deploy", wait: true, parameters: params
+//                 // }
+//                     sh """
+                    
+//                         echo "Here I wrote shell scripts******"
+//                      """
+                    
+
+//                     // }
+                    
+//             }
+//         }
+//     }
+//     // post build
+//     post { 
+//         always { 
+//             echo 'I will always say Hello again!'
+//             deleteDir()
+//         }
+//         failure { 
+//             echo 'this runs when pipeline is failed, used generally to send some alerts'
+//         }
+//         success{
+//             echo 'I will say Hello when pipeline is success'
+//         }
+//     }
+// }
+
+
+
+
+
+
+
+
+    pipeline {
     agent {
         node {
-           label 'AGENT-1' 
+            label 'AGENT-1'           
         }
     }
     environment { 
-        packageVersion = ''
-        //GIVE PRIVATE IP
-        nexusURL = '172.31.0.187:8081'
-    }
+            GREETING='HELLo JENKINS.'
+        }
     options {
-        timeout(time: 1, unit: 'HOURS')
-        disableConcurrentBuilds()
-    }
-    // parameters {
-    //     string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+            // Timeout counter starts AFTER agent is allocated
+            timeout(time: 1, unit: 'HOURS')
+            disableConcurrentBuilds()
+             ansiColor('xterm')
+        }
 
-    //     text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
 
-    //     booleanParam(name: 'TOGGLE', defaultValue: true, description: 'Toggle this value')
+        parameters {            
 
-    //     choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
+               choice(name: 'action', choices: ['apply', 'destroy'], description: 'Pick something')
+           
+        }
 
-    //     password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
-    // }
-    // build
     stages {
-        stage('Get the version') {
-            steps {
-                script {
-                    def packageJson = readJSON file: 'package.json'
-                    packageVersion = packageJson.version
-                    echo "application version: $packageVersion"
-                }
-            }
-        }
-        stage('Install dependencies') {
+        stage('Init') {
             steps {
                 sh """
-                    npm install
+                    cd 01-vpc
+                    terraform init -reconfigure
                 """
             }
         }
-        stage('Build') {
+        stage('Plan') {
             steps {
                 sh """
-                    ls -la
-                    zip -q -r catalogue.zip ./* -x ".git" -x "*.zip"
-                    ls -ltr
+                    cd 01-vpc
+                    terraform plan
                 """
-            }
-        }
-        stage('Publish Artifact') {
-            steps {
-                 nexusArtifactUploader(
-                    nexusVersion: 'nexus3',
-                    protocol: 'http',
-                    nexusUrl: "${nexusURL}",
-                    groupId: 'com.roboshop',
-                    version: "${packageVersion}",
-                    repository: 'catalogue',
-                    credentialsId: 'nexus-auth',
-                    artifacts: [
-                        [artifactId: 'catalogue',
-                        classifier: '',
-                        file: 'catalogue.zip',
-                        type: 'zip']
-                    ]
-                )
             }
         }
         stage('Deploy') {
-            steps {
-                // script {
-                //         def params = [
-                //             string(name: 'version', value: "$packageVersion"),
-                //             string(name: 'environment', value: "dev")
-                //         ]
-                //         build job: "catalogue-deploy", wait: true, parameters: params
+            when {
+                expression { 
+                    params.action == 'apply'
+                }
+            }
+            input {
+                message "Should we continue?"
+                ok "Yes, we should."
+                // submitter "alice,bob"
+                // parameters {
+                //     string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
                 // }
-                    sh """
-                    
-                        echo "Here I wrote shell scripts******"
-                     """
-                    
-
-                    // }
-                    
+            }
+            steps {
+                sh """
+                    cd 01-vpc
+                    terraform apply -auto-approve
+                """
+            }
+        }
+        stage('Destroy') {
+            when {
+                expression { 
+                    params.action == 'destroy'
+                }
+            }
+            input {
+                message "Should we continue?"
+                ok "Yes, we should."
+                // submitter "alice,bob"
+                // parameters {
+                //     string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+                // }
+            }
+            steps {
+                sh """
+                    cd 01-vpc
+                    terraform destroy -auto-approve
+                """
             }
         }
     }
@@ -94,7 +199,6 @@ pipeline {
     post { 
         always { 
             echo 'I will always say Hello again!'
-            deleteDir()
         }
         failure { 
             echo 'this runs when pipeline is failed, used generally to send some alerts'
