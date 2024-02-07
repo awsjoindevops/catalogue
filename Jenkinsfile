@@ -27,13 +27,13 @@ pipeline {
     // build
     stages {
         stage('Get the version') {
-            // steps {
+             steps {
             //      script {
             //          def packageJson = readJSON file: 'package.json'
             //          packageVersion = packageJson.version
             //          echo "application version: $packageVersion"
             //      }
-            // }
+             }
         }
         stage('Install dependencies') {
             steps {
@@ -52,6 +52,10 @@ pipeline {
             }
         }
         stage('Publish Artifact') {
+
+            steps{
+                
+            }
             // steps {
             //      nexusArtifactUploader(
             //         nexusVersion: 'nexus3',
