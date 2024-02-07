@@ -78,6 +78,13 @@ pipeline {
             }
         }
         stage('Deploy') {
+            steps {
+                       
+                       sh """
+                            echo "HERE I wrote shell script"
+
+                       """
+                    }
             // when {
             //     expression{
             //         params.Deploy == 'true'
@@ -92,16 +99,8 @@ pipeline {
             //             build job: "catalogue-deploy", wait: true, parameters: params
             //         }
             // }
-
-
-            steps {
-                steps {
-                       
-                       sh """
-                            echo "HERE I wrote shell script"
-
-                       """
-                    }
+          
+                
             }
 
 
