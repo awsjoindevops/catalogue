@@ -80,9 +80,11 @@ pipeline {
                 //         build job: "catalogue-deploy", wait: true, parameters: params
                 // }
                     sh """
+                    
                         echo "Here I wrote shell scripts******"
                      """
                     
+
                     // 
                     }
             }
