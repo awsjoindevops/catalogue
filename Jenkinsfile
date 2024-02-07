@@ -28,6 +28,10 @@ pipeline {
     stages {
         stage('Get the version') {
              steps {
+
+                sh """
+                echo "HELLO1"
+                """
             //      script {
             //          def packageJson = readJSON file: 'package.json'
             //          packageVersion = packageJson.version
@@ -54,7 +58,10 @@ pipeline {
         stage('Publish Artifact') {
 
             steps{
-                
+
+                sh """
+                echo "HELLO1"
+                """
 
             }
             // steps {
