@@ -6,7 +6,7 @@ pipeline {
     }
     environment { 
         packageVersion = ''
-        nexusURL = '172.31.5.95:8081'
+        nexusURL = '172.31.7.170:8081'
     }
     options {
         timeout(time: 1, unit: 'HOURS')
@@ -17,7 +17,7 @@ pipeline {
 
         // text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
 
-        booleanParam(name: 'Deploy', defaultValue: false, description: 'Toggle this value')
+        //booleanParam(name: 'Deploy', defaultValue: false, description: 'Toggle this value')
 
         // choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
 
