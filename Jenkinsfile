@@ -7,7 +7,7 @@ pipeline {
     environment { 
         packageVersion = ''
         //GIVE PRIVATE IP
-        nexusURL = '172.31.2.137:8081'
+        nexusURL = '172.31.0.187:8081'
     }
     options {
         timeout(time: 1, unit: 'HOURS')
