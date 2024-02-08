@@ -79,29 +79,29 @@ pipeline {
             }
         }
         stage('Deploy') {
-            steps {
-                       
-                       sh """
-                            echo "HERE I wrote shell script"
-
-                       """
-                    }
-        }
-            // when {
-            //     expression{
-            //         params.Deploy == 'true'
-            //     }
-            // }
             // steps {
-            //     script {
-            //             def params = [
-            //                 string(name: 'version', value: "$packageVersion"),
-            //                 string(name: 'environment', value: "dev")
-            //             ]
-            //             build job: "catalogue-deploy", wait: true, parameters: params
+                       
+            //            sh """
+            //                 echo "HERE I wrote shell script"
+
+            //            """
             //         }
-            // }
-                            
+        
+            when {
+                expression{
+                    params.Deploy == 'true'
+                }
+            }
+            steps {
+                script {
+                        def params = [
+                            string(name: 'version', value: "$packageVersion"),
+                            string(name: 'environment', value: "dev")
+                        ]
+                        build job: "catalogue-deploy", wait: true, parameters: params
+                    }
+            }
+        }              
 }
          
     // post build
