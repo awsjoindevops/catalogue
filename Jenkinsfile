@@ -50,11 +50,11 @@ pipeline {
             }
         }
         stage('Sonar Scan') {
-                    steps {
-                        sh """
-                              sonar-scanner
-                        """
-                    }
+             steps {
+                sh """
+                    sonar-scanner
+                """
+             }
         }
 
         
